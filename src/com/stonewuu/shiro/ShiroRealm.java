@@ -2,9 +2,9 @@ package com.stonewuu.shiro;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
+import javax.transaction.Transactional;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -12,6 +12,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -20,23 +21,28 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.stereotype.Service;
 
-import com.stonewuu.dao.UserDao;
 import com.stonewuu.entity.Permission;
 import com.stonewuu.entity.Role;
 import com.stonewuu.entity.User;
+import com.stonewuu.helper.PasswordHelper;
+import com.stonewuu.service.UserService;
 
 @Service
 public class ShiroRealm extends AuthorizingRealm {
 
 	@Resource
-	private UserDao userDao;
+	private UserService userService;
+	@Resource
+	private PasswordHelper passHelper;
 
 	/**
 	 * 登陆第二步,通过用户信息将其权限和角色加入作用域中,达到验证的功能
 	 */
 	@Override
+	@Transactional
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
 		// 根据用户配置用户与权限
 		if (principals == null) {
@@ -46,16 +52,16 @@ public class ShiroRealm extends AuthorizingRealm {
 		List<String> rolesStr = new ArrayList<String>();
 		List<String> permissions = new ArrayList<String>();
 		// 通过当前登陆用户的姓名查找到相应的用户的所有信息
-		User user = userDao.getUser(name);
+		User user = userService.findByUserName(name);
 		if (user.getName().equals(name)) {
-			Set<Role> roles = user.getRoles();
+			List<Role> roles = user.getRoles();
 			//获取角色
 			if (roles != null) {
 				for(Role role : roles){
 					// 装配用户的角色
-					rolesStr.add(role.getRole());
+					rolesStr.add(role.getName());
 					//获取权限
-					Set<Permission> permiss = role.getPermissions();
+					List<Permission> permiss = role.getPermissions();
 					if(permiss != null){
 						for(Permission p : permiss){
 							//装配用户的权限
@@ -78,51 +84,35 @@ public class ShiroRealm extends AuthorizingRealm {
 	 * 登录第一步，验证当前登录的Subject
 	 */
 	@Override
+	@Transactional
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken)
 			throws AuthenticationException {
 		// 登陆后的操作,此处为登陆有的第一步操作,从LoginController.login中调用了此处的token
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
-		System.out.println("token is :" + token);
-		// 简单默认一个用户,实际项目应User user =
-		// userService.getByAccount(token.getUsername());
-		// 下面通过读取token中的数据重新封装了一个user
-		User user = userDao.getUser(token.getUsername());
+		// 查询用户
+		User user = userService.findByUserNameOrEmail(token.getUsername(),token.getUsername());
+
 		if (user == null) {
-			throw new AuthorizationException("该用户不存在！");
+			throw new UnknownAccountException("该用户不存在！");
 		}
-		if(Boolean.TRUE.equals(user.getLock())) {
+		if(Boolean.TRUE.equals(user.getLocked())) {
             throw new LockedAccountException(); //帐号被锁定  
         }
+		
 		SimpleAuthenticationInfo info = null;
+		//如果是用户名
 		if (user.getName().equals(token.getUsername())) {
-			info = new SimpleAuthenticationInfo(user.getName(), user.getPassword(), getName());
+			info = new SimpleAuthenticationInfo(user.getName(), user.getPassword(),ByteSource.Util.bytes(user.getSalt()), getName());
 		}
-		// 将该User村放入session作用域中
-		// this.setSession("user", user);
+		//如果是邮箱
+		if (user.getEmail().equals(token.getUsername())) {
+			info = new SimpleAuthenticationInfo(user.getEmail(), user.getPassword(),ByteSource.Util.bytes(user.getSalt()), getName());
+		}
+		//保存用户信息
+		Subject currentUser = SecurityUtils.getSubject(); 
+		Session session = currentUser.getSession();
+		session.setAttribute("currentUser",user);
 		return info;
-	}
-
-	/**
-	 * 将一些数据放到ShiroSession中,以便于其它地方使用
-	 * 比如Controller,使用时直接用HttpSession.getAttribute(key)就可以取到
-	 */
-	private void setSession(Object key, Object value) {
-		Subject currentUser = SecurityUtils.getSubject();
-		if (null != currentUser) {
-			Session session = currentUser.getSession();
-			System.out.println("Session默认超时时间为[" + session.getTimeout() + "]毫秒");
-			if (null != session) {
-				session.setAttribute(key, value);
-			}
-		}
-	}
-
-	public UserDao getUserDao() {
-		return userDao;
-	}
-
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
 	}
 
 }

@@ -4,16 +4,7 @@ import java.util.Set;
 
 import com.stonewuu.entity.User;
 
-public interface UserService {
-	/**
-	 * @Title: createUser
-	 * @Description: 创建账户
-	 * @author stonewuuu 2017年1月11日 下午2:58:29
-	 *
-	 * @param user
-	 * @return
-	 */
-	public User createUser(User user); 
+public interface UserService extends GeneralService<User>{
 
 	/**
 	 * @Title: changePassword
@@ -64,7 +55,17 @@ public interface UserService {
 	 * @param username
 	 * @return
 	 */
-	public User findByUsername(String userName);
+	
+	public User findByUserName(String userName);
+	/**
+	 * @Title: findByUsername
+	 * @Description: 根据用户名或者邮箱查找用户
+	 * @author stonewuu 2017年1月11日 下午2:59:03
+	 *
+	 * @param username
+	 * @return
+	 */
+	public User findByUserNameOrEmail(String userName,String email);
 
 	/**
 	 * @Title: findRoles
@@ -85,4 +86,16 @@ public interface UserService {
 	 * @return
 	 */
 	public Set<String> findPermissions(String username);
+
+	/**
+	 * 
+	 * @Title: updateBdInfo
+	 * @Description: 更新用户绑定信息
+	 * @author stonewuu 2017年1月21日 下午5:52:20
+	 *
+	 * @param user
+	 * @return
+	 */
+	public User updateBdInfo(User user);
+
 }

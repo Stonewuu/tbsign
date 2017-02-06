@@ -1,0 +1,117 @@
+@CHARSET "UTF-8";
+
+.self_animate{
+	transition: .2s ease-out;
+}
+
+.animate *{
+	transition: .2s ease-out;
+}
+
+.clear{
+	clear: both;
+}
+
+
+.input-element {
+	margin: 0 auto;
+	padding-top: 30px;
+	position: relative;
+	overflow: visible;
+	text-align: left;
+}
+
+.input-element:last-child {
+	margin-bottom: 0;
+}
+
+.input-element:after {
+	content: " ";
+	display: block;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 1px;
+	background: #333;
+}
+
+.input-element:before {
+	content: " ";
+	display: block;
+	position: absolute;
+	bottom: 0;
+	width: 0;
+	height: 1px;
+	background: #4FC5C7;
+	-webkit-transition: width .3s ease-in-out;
+	transition: width .3s ease-in-out;
+	z-index: 20;
+	left: 50%;
+	-webkit-transform: translateX(-50%);
+	transform: translateX(-50%);
+}
+
+.input-element.right:before {
+	left: 0;
+	-webkit-transform: translateX(0);
+	transform: translateX(0);
+}
+
+.input-element label {
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	-ms-backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+	color: #999;
+	top: 42px;
+	left: 0;
+	position: absolute;
+	-webkit-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+	width: 100%;
+	pointer-events: none;
+}
+
+.input-element label:hover {
+	cursor: pointer;
+	color: #efefef;
+}
+
+.input-element input {
+	width: 100%;
+	padding: 8px 0;
+	background: none;
+	border: none;
+	outline: none;
+	color: #333;
+	font-size: 18px;
+	-webkit-backface-visibility: hidden;
+}
+
+.input-element.active label{
+	top: 15px;
+	color: #4FC5C7;
+	font-size: 12px;
+}
+
+.input-element label.error,
+.input-element.active label.error{
+	color: #f00;
+}
+
+.input-element.active:before {
+	width: 100%;
+}
+
+.input-element.active.right label {
+	top: 42px;
+	left: 100%;
+	font-size: 18px;
+}
+
+.input-element.active.bottom label {
+	top: calc(100% + 5px);
+	font-size: 14px;
+}

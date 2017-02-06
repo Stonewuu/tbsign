@@ -1,7 +1,8 @@
 package com.stonewuu.entity;
 
-import java.util.Set;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,8 +30,8 @@ public class Permission {
 	@Column(nullable = false)
 	private Boolean available = true;
 
-	@ManyToMany(mappedBy = "permissions", fetch = FetchType.EAGER)
-	private Set<Role> roles;
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "permissions", fetch = FetchType.EAGER)
+	private List<Role> roles;
 
 	public Long getId() {
 		return id;
@@ -64,12 +65,13 @@ public class Permission {
 		this.available = available;
 	}
 
-	public Set<Role> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
+
 
 }

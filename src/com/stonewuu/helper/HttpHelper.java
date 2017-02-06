@@ -7,10 +7,14 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class HttpHelper {
+
+	private static final Log log = LogFactory.getLog(HttpHelper.class);
 	
 	/**
 	 * 
@@ -23,7 +27,7 @@ public class HttpHelper {
 	 * @param cookie
 	 * @return
 	 */
-	public String sendPost(String url, String param, String cookie) {
+	public String sendPost(String url, String param) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -31,7 +35,7 @@ public class HttpHelper {
 			URL realUrl = new URL(url);
 			// 打开和URL之间的连接
 			URLConnection conn = realUrl.openConnection();
-			conn.addRequestProperty("Cookie", cookie);
+//			conn.addRequestProperty("Cookie", cookie);
 			// 设置通用的请求属性
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("accept", "*/*");
@@ -51,8 +55,7 @@ public class HttpHelper {
 				result += line;
 			}
 		} catch (Exception e) {
-			System.out.println("发送 POST 请求出现异常！" + e);
-			e.printStackTrace();
+			log.error("发送 POST 请求出现异常！", e);
 		}
 		// 使用finally块来关闭输出流、输入流
 		finally {

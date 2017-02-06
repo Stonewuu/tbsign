@@ -1,7 +1,8 @@
 package com.stonewuu.entity;
 
-import java.util.Set;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -28,8 +29,8 @@ public class Role {
 	@Column(length = 32, nullable = true)
 	private String description; // 描述
 
-	@ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
-	private Set<User> users;
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "roles", fetch = FetchType.EAGER)
+	private List<User> users;
 	
 	/**
 	 * 角色-权限多对多关系，由角色维护
@@ -38,18 +39,10 @@ public class Role {
 	@JoinTable(name = "t_role_permission",
 			joinColumns = { @JoinColumn(name = "role_id") },
 			inverseJoinColumns = { @JoinColumn(name = "permiss_id") })
-	private Set<Permission>  permissions;
+	private List<Permission>  permissions;
 	
 	@Column(nullable = false)
 	private Boolean available = true; // 是否可用
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public Long getId() {
 		return id;
@@ -59,12 +52,20 @@ public class Role {
 		this.id = id;
 	}
 
-	public String getRole() {
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getRoleName() {
 		return roleName;
 	}
 
-	public void setRole(String role) {
-		this.roleName = role;
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
 	}
 
 	public String getDescription() {
@@ -75,6 +76,22 @@ public class Role {
 		this.description = description;
 	}
 
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	public List<Permission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(List<Permission> permissions) {
+		this.permissions = permissions;
+	}
+
 	public Boolean getAvailable() {
 		return available;
 	}
@@ -83,20 +100,5 @@ public class Role {
 		this.available = available;
 	}
 
-	public Set<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(Set<User> users) {
-		this.users = users;
-	}
-
-	public Set<Permission> getPermissions() {
-		return permissions;
-	}
-
-	public void setPermissions(Set<Permission> permissions) {
-		this.permissions = permissions;
-	}
 	
 }

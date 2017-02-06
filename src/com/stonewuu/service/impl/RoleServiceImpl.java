@@ -15,14 +15,16 @@ public class RoleServiceImpl implements RoleService{
 	private RoleDao roleDao;
 	
 	@Override
-	public Role createRole(Role role) {
+	public Role create(Role role) {
 		return roleDao.save(role);
 	}
 
 	@Override
-	public void deleteRole(Long roleId) {
-		// TODO Auto-generated method stub
-		
+	public void delete(Object roleId) {
+		Role role = roleDao.find(roleId);
+		if(role!=null){
+			roleDao.delete(role);
+		}
 	}
 
 	@Override
@@ -33,6 +35,12 @@ public class RoleServiceImpl implements RoleService{
 
 	@Override
 	public void uncorrelationPermissions(Long roleId, Long[] permissionIds) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Role t) {
 		// TODO Auto-generated method stub
 		
 	}

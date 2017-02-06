@@ -2,9 +2,6 @@ package com.stonewuu.service;
 
 import com.stonewuu.entity.Permission;
 
-public interface PermissionService {
+public interface PermissionService extends GeneralService<Permission>{
 
-	public Permission createPermission(Permission permission);
-
-	public void deletePermission(Long permissionId);
 }

@@ -23,14 +23,20 @@ public class UserServiceImpl implements UserService {
 	
 	@Resource
 	private PasswordHelper passHelper;
-	
+
 	@Override
 	@Transactional
-	public User createUser(User user) {
+	public User create(User user) {
 		if(user==null || StringUtils.isEmpty(user.getName()) ){
 			return null;
 		}
 		passHelper.encryptPassword(user);
+		return userDao.createUser(user);
+	}
+
+	@Override
+	@Transactional
+	public User updateBdInfo(User user) {
 		return userDao.createUser(user);
 	}
 
@@ -66,7 +72,6 @@ public class UserServiceImpl implements UserService {
 			//抛出密码不正确异常
 			throw new IncorrectCredentialsException();
 		}
-		
 	}
 
 	@Override
@@ -82,8 +87,15 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User findByUsername(String userName) {
+	@Transactional
+	public User findByUserName(String userName) {
 		return userDao.getUser(userName);
+	}
+	
+	@Override
+	@Transactional
+	public User findByUserNameOrEmail(String userName,String email) {
+		return userDao.getUser(userName,email);
 	}
 
 	@Override
@@ -96,6 +108,21 @@ public class UserServiceImpl implements UserService {
 	public Set<String> findPermissions(String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	@Transactional
+	public void delete(Object id) {
+		User user = userDao.find(id);
+		if(user!=null){
+			userDao.delete(user);
+		}
+	}
+
+	@Override
+	public void update(User t) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -18,7 +18,40 @@ import net.sf.json.JSONObject;
 public class TieBaSignHelper {
 	@Resource
 	private HttpHelper httpHelper;
-	
+
+	/**
+	 * 
+	 * @Title: getForumParam
+	 * @Description: 获取用户信息需要的参数
+	 * @author stonewuu 2017年1月11日 下午6:01:57
+	 *
+	 * @return
+	 */
+	public  Map<String,String> getProfileParam(String BDUSS){
+		Map<String, String> paramMap = new LinkedHashMap<String, String>();
+		paramMap.put("bdusstoken", BDUSS);
+//		paramMap.put("_client_id","wappc_1484940824312_108");
+//		paramMap.put("_client_type","2");
+//		paramMap.put("_client_version","6.2.2");
+//		paramMap.put("_phone_imei","860046034358632");
+//		paramMap.put("cuid","1BM12JF81ECDA24492D644A31231463B|236853430640068|com.baidu.tieba6.2.2");
+//		paramMap.put("from","tieba");
+//		paramMap.put("has_plist","1");
+//		paramMap.put("model","Mix");
+//		paramMap.put("need_post_count","1");
+//		paramMap.put("pn","1");
+//		paramMap.put("rn","20");
+//		paramMap.put("stErrorNums","0");
+//		paramMap.put("stMethod","1");
+//		paramMap.put("stMode","1");
+//		paramMap.put("stSize","5513");
+//		paramMap.put("stTime","136");
+//		paramMap.put("stTimesNum","0");
+//		paramMap.put("st_type","null");
+//		paramMap.put("timestamp","1484940941655");
+//		paramMap.put("uid","590916732");
+		return paramMap;
+	}
 	/**
 	 * 
 	 * @Title: getForumParam
@@ -66,7 +99,7 @@ public class TieBaSignHelper {
 	 */
 	public Map<String,String> getSignMap(String fid,String kw,String BDUSS){
 		//获取TBS
-		String tbsResponse = httpHelper.sendPost("http://tieba.baidu.com/dc/common/tbs", "", "BDUSS="+BDUSS);
+		String tbsResponse = httpHelper.sendPost("http://tieba.baidu.com/dc/common/tbs", "");
 		JSONObject json = JSONObject.fromObject(tbsResponse);
 		String tbs = json.get("tbs").toString();
 		
@@ -153,5 +186,53 @@ public class TieBaSignHelper {
 		} catch (NoSuchAlgorithmException e) {
 		}
 		return result;
+	}
+
+	/**
+	 * 
+	 * @Title: getTiebaForumList
+	 * @Description: 获取贴吧关注的吧请求
+	 * @author stonewuu 2017年1月21日 上午3:38:45
+	 *
+	 * @param param
+	 * @param bduss
+	 * @return
+	 */
+	public JSONObject getTiebaForumList(String param){
+		String response = httpHelper.sendPost("http://c.tieba.baidu.com/c/f/forum/forumrecommend", param);
+		JSONObject json = JSONObject.fromObject(response);
+		return json;
+	}
+	
+	/**
+	 * 
+	 * @Title: getTiebProfile
+	 * @Description: 获取用户信息请求
+	 * @author stonewuu 2017年1月21日 上午3:38:58
+	 *
+	 * @param param
+	 * @param bduss
+	 * @return
+	 */
+	public JSONObject getTiebProfile(String param){
+		String response = httpHelper.sendPost("http://c.tieba.baidu.com/c/s/login", param);
+		JSONObject json = JSONObject.fromObject(response);
+		return json;
+	}
+	
+	/**
+	 * 
+	 * @Title: getTiebProfile
+	 * @Description: 签到请求
+	 * @author stonewuu 2017年1月21日 上午3:39:33
+	 *
+	 * @param param
+	 * @param bduss
+	 * @return
+	 */
+	public JSONObject doSignResult(String param){
+		String response = httpHelper.sendPost("http://c.tieba.baidu.com/c/c/forum/sign", param);
+		JSONObject json = JSONObject.fromObject(response);
+		return json;
 	}
 }

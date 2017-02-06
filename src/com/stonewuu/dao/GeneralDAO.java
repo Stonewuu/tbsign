@@ -64,8 +64,8 @@ public class GeneralDAO<T>{
 	 * 新增或修改
 	 * @param t 对象
 	 */
-	public void update(T t){
-		em.merge(t);
+	public T update(T t){
+		return em.merge(t);
 	}
 	
 	/**
@@ -116,11 +116,17 @@ public class GeneralDAO<T>{
 	 * @param vals
 	 * @return
 	 */
-	public List<T> findByPropertys(String sql,Object[] vals){
-		String jpql = "from "+entityClass.getName()+" where 1=1 and "+sql;
+	public List<T> findByPropertys(String reg ,Map<String, Object> valueMap){
+		String jpql = "from "+entityClass.getName()+" where 1=1 and "+reg;
 		TypedQuery<T> query = em.createQuery(jpql,entityClass);
-		for(int i=0;i<vals.length;i++){
-			query.setParameter(i+1, vals[i]);
+		if(valueMap != null){
+			Iterator<Entry<String, Object>> entries = valueMap.entrySet().iterator();
+			while(entries.hasNext()){
+				Entry<String, Object> entry = (Entry<String, Object>) entries.next();
+				String key = (String) entry.getKey();
+				Object value = (Object) entry.getValue();
+				query.setParameter(key, value);
+			}
 		}
 		return query.getResultList();
 	}
@@ -154,7 +160,7 @@ public class GeneralDAO<T>{
 		return count;
 	}
 	public int selectCount(String reg ,Map<String, Object> valueMap){
-		String sql = "select count(*) from "+entityClass.getName()+" where 1 = 1 "+reg;
+		String sql = "select count(*) from "+entityClass.getName()+" where 1 = 1 and "+reg;
 		TypedQuery<Long> query = em.createQuery(sql, Long.class);
 		if(valueMap != null){
 			Iterator<Entry<String, Object>> entries = valueMap.entrySet().iterator();

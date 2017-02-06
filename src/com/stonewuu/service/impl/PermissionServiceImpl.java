@@ -15,16 +15,22 @@ public class PermissionServiceImpl implements PermissionService {
 	private PermissionDao permissDao;
 
 	@Override
-	public Permission createPermission(Permission permission) {
+	public Permission create(Permission permission) {
 		return permissDao.save(permission);
 	}
 
 	@Override
-	public void deletePermission(Long permissionId) {
+	public void delete(Object permissionId) {
 		Permission p = permissDao.find(permissionId);
 		if (p != null) {
 			permissDao.delete(p);
 		}
+	}
+
+	@Override
+	public void update(Permission t) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
