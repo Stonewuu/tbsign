@@ -34,6 +34,7 @@
 							</select>
 							<input type="hidden" name="uid" value="${bdInfo.uid }" />
 							<a href="javascript:;" class="btn small_btn" id="refreshForum">刷新贴吧列表</a>
+							<a href="javascript:;" class="btn small_btn" id="signAllForum">签到所有贴吧</a>
 						</p>
 						<c:if test="${!status}">
 							<div class="table_container">
@@ -58,7 +59,7 @@
 											<td>${forum.signed?"已签到":"未签到" }</td>
 											<td>
 												<c:if test="${!forum.signed}">
-													<a href="javascript:;" class="green">测试签到</a>
+													<a href="javascript:;" class="green testSign" forum_id="${forum.forumId }">测试签到</a>
 												</c:if>
 											</td>
 										</tr>

@@ -5,11 +5,11 @@ $(function(){
 			return false;
 		}
 		var param = $("#registForm").serialize();
-		$.post(basePath+"/auth/registIn",param,function(data){
+		$.post(path+"/auth/registIn",param,function(data){
 			if(data.status){
 				layer.alert("注册成功！将跳转至首页。", {closeBtn: 0}, function(index){
 					layer.close(index);
-					location.href = basePath+"/";
+					location.href = path+"/";
 				});
 			}else{
 				layer.alert(data.msg,{
@@ -17,7 +17,6 @@ $(function(){
 					closeBtn: 0
 				},function(index){
 					layer.close(index);
-					location.reload();
 				});
 			}
 		},"json");

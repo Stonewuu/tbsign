@@ -2,7 +2,7 @@ $(function() {
 
 	$("#bindBduss").click(function(){
 		var bduss = $("input[name='bduss']").val();
-		$.post(basePath+"/bindInfo/submitBduss",{bduss:bduss},function(data){
+		$.post(path+"/bindInfo/submitBduss",{bduss:bduss},function(data){
 			if(data.status){
 				layer.alert("绑定成功",{
 					closeBtn: 0
@@ -32,7 +32,7 @@ $(function() {
 			btn : [ '是', '否' ]
 			// 按钮
 		}, function() {
-			$.post(basePath + "/bindInfo/unbindBduss", {
+			$.post(path + "/bindInfo/unbindBduss", {
 				info_id : bdid
 			}, function(data) {
 				if (data.status) {

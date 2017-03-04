@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.stonewuu.entity.User;
 import com.stonewuu.service.RoleService;
 import com.stonewuu.service.UserService;
 
@@ -22,9 +21,8 @@ public class BaseTest {
 	
 	@Test
 	public void test1(){
-		User user = new User();
-		user.setName("test");
-		user.setPassword("test");
-		userService.create(user);
+		StringBuffer str = new StringBuffer("1");
+		str.delete(str.length()-1, str.length());
+		System.out.println(str);
 	}
 }

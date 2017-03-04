@@ -27,7 +27,7 @@ public class HttpHelper {
 	 * @param cookie
 	 * @return
 	 */
-	public String sendPost(String url, String param) {
+	public String sendPost(String url, String param,String cookie) {
 		PrintWriter out = null;
 		BufferedReader in = null;
 		String result = "";
@@ -35,7 +35,7 @@ public class HttpHelper {
 			URL realUrl = new URL(url);
 			// 打开和URL之间的连接
 			URLConnection conn = realUrl.openConnection();
-//			conn.addRequestProperty("Cookie", cookie);
+			conn.addRequestProperty("Cookie", cookie);
 			// 设置通用的请求属性
 			conn.setRequestProperty("connection", "Keep-Alive");
 			conn.setRequestProperty("accept", "*/*");
@@ -71,5 +71,9 @@ public class HttpHelper {
 			}
 		}
 		return result;
+	}
+
+	public String sendPost(String url, String param) {
+		return sendPost(url, param, "");
 	}
 }

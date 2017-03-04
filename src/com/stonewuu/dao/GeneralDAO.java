@@ -110,10 +110,15 @@ public class GeneralDAO<T>{
 		return query.getResultList();
 	}
 
+	
 	/**
-	 * 组装条件查找
-	 * @param sql
-	 * @param vals
+	 * 
+	 * @Title: findByPropertys
+	 * @Description: 按自定义条件查找 select * from * where ... and ?
+	 * @author stonewuu 2017年2月23日 下午9:18:54
+	 *
+	 * @param reg and ...
+	 * @param valueMap key:参数名 ，value:值
 	 * @return
 	 */
 	public List<T> findByPropertys(String reg ,Map<String, Object> valueMap){
@@ -131,6 +136,17 @@ public class GeneralDAO<T>{
 		return query.getResultList();
 	}
 
+	/**
+	 * 
+	 * @Title: findAllByPage
+	 * @Description: 按条件分页查找
+	 * @author stonewuu 2017年2月23日 下午9:18:13
+	 *
+	 * @param size 显示条数
+	 * @param page 第几页
+	 * @param reg and ...
+	 * @return
+	 */
 	public List<T> findAllByPage(int size,int page,String reg) {
 		String sql = "from "+entityClass.getName()+" where 1 = 1 "+reg;
 		TypedQuery<T> query = em.createQuery(sql, entityClass);

@@ -50,6 +50,11 @@ public class BDInfoServiceImpl implements BDInfoService {
 		
 	}
 
-
+	@Override
+	@Transactional
+	public List<BDInfo> findAll() {
+		return bdInfoDao.findAll();
+	}
+	
 
 }

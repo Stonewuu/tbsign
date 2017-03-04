@@ -5,9 +5,9 @@ $(function(){
 			return false;
 		}
 		var param = $("#loginForm").serialize();
-		$.post(basePath+"/auth/loginIn",param,function(data){
+		$.post(path+"/auth/loginIn",param,function(data){
 			if(data.status){
-				location.href = basePath+"/";
+				location.href = path+"/";
 			}else{
 				layer.alert(data.msg,{
 					icon:2,

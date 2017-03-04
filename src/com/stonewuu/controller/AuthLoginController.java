@@ -188,7 +188,12 @@ public class AuthLoginController extends BaseController {
 		}
 		User user = userSerivce.findByUserNameOrEmail(currUser.getName(),currUser.getEmail());
 		if(user!=null){
-			String msg = "该用户名已存在！";
+			String msg = null;
+			if(user.getName().equals(currUser.getName())){
+				msg = "该用户名已存在！";
+			}else if(user.getEmail().equals(currUser.getEmail())){
+				msg = "该邮箱已被注册！";
+			}
 			map.put("msg",msg);
 			map.put("status", false);
 			return map;

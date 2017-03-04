@@ -1,26 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="   
-         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
-   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd   
-   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
-   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="   
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd   
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 	<!-- 用注解进行依赖注入 -->
 	<context:annotation-config />
 	<!-- 用注解让spring管理bean -->
 	<context:component-scan base-package="com.stonewuu" />
-
-	<bean id="dataSource" name="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<!-- 开启这个配置，spring才能识别@Scheduled注解 -->
+    <task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
+    <task:scheduler id="qbScheduler" pool-size="10"/>  
+	<!-- 异步线程池 -->
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<!-- 核心线程数 -->
+		<property name="corePoolSize" value="10" />
+		<!-- 最大线程数 -->
+		<property name="maxPoolSize" value="50" />
+		<!-- 队列最大长度 >=mainExecutor.maxSize -->
+		<property name="queueCapacity" value="1000" />
+		<!-- 线程池维护线程所允许的空闲时间 -->
+		<property name="keepAliveSeconds" value="300" />
+		<!-- 线程池对拒绝任务(无线程可用)的处理策略 -->
+		<property name="rejectedExecutionHandler">
+			<bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+		</property>
+	</bean>
+	<bean id="dataSource" name="dataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource">
 		<!-- 指定连接数据库的驱动 -->
 		<property name="driverClass" value="com.mysql.jdbc.Driver" />
 		<!-- 指定连接数据库的URL -->
-		<property name="jdbcUrl" value="jdbc:mysql://127.0.0.1:3306/tbsign?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true" />
-		<!-- <property name="jdbcUrl" value="jdbc:mysql://127.13.167.130:3306/blog?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true" /> -->
+		<property name="jdbcUrl"
+			value="jdbc:mysql://127.0.0.1:3306/tbsign?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true" />
+		<!-- <property name="jdbcUrl" value="jdbc:mysql://127.13.167.130:3306/blog?useUnicode=true&amp;characterEncoding=utf-8&amp;autoReconnect=true" 
+			/> -->
 		<!-- 指定连接数据库的用户名 -->
 		<!-- <property name="user" value="admin4M7LHxI" /> -->
 		<property name="user" value="root" />
 		<!-- 指定连接数据库的密码 -->
 		<!-- <property name="password" value="SKCbyZuEvVqx" /> -->
-		<property name="password" value="a4658132" />
+		<property name="password" value="yourpassword" />
 		<!-- 指定连接池中保留的最大连接数. Default:15 -->
 		<property name="maxPoolSize" value="15" />
 		<!-- 指定连接池中保留的最小连接数 -->
@@ -31,24 +57,26 @@
 		<property name="maxIdleTime" value="60" />
 		<!-- 当连接池中的连接耗尽的时候c3p0一次同时获取的连接数. Default:3 -->
 		<property name="acquireIncrement" value="3" />
-		<!-- JDBC的标准,用以控制数据源内加载的PreparedStatements数量。 但由于预缓存的statements属于单个connection而不是整个连接池所以设置这个参数需要考虑到多方面的因数. 如果maxStatements与maxStatementsPerConnection均为0,则缓存被关闭。Default:0 -->
+		<!-- JDBC的标准,用以控制数据源内加载的PreparedStatements数量。 但由于预缓存的statements属于单个connection而不是整个连接池所以设置这个参数需要考虑到多方面的因数. 
+			如果maxStatements与maxStatementsPerConnection均为0,则缓存被关闭。Default:0 -->
 		<property name="maxStatements" value="0" />
 		<!-- 每60秒检查所有连接池中的空闲连接.Default:0 -->
 		<property name="idleConnectionTestPeriod" value="60" />
 	</bean>
 
 	<!-- 配置JPA管理工厂 -->
-	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="packagesToScan" value="com.stonewuu.entity"/> 
-		<!-- <property name="persistenceUnitName" value="persistUnit" />
-		<property name="persistenceXmlLocation" value="/WEB-INF/persistence.xml" /> -->
+		<property name="packagesToScan" value="com.stonewuu.entity" />
+		<!-- <property name="persistenceUnitName" value="persistUnit" /> <property 
+			name="persistenceXmlLocation" value="/WEB-INF/persistence.xml" /> -->
 		<property name="persistenceProvider" ref="persistenceProvider" />
 		<property name="jpaVendorAdapter" ref="jpaVendorAdapter" />
 		<property name="jpaDialect" ref="jpaDialect" />
 		<property name="jpaProperties">
 			<props>
-				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="hibernate.hbm2ddl.auto">update</prop>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
 			</props>
@@ -56,7 +84,8 @@
 	</bean>
 
 	<bean id="persistenceProvider" class="org.hibernate.ejb.HibernatePersistence" />
-	<bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+	<bean id="jpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 		<property name="generateDdl" value="false" />
 		<property name="database" value="HSQL" />
 	</bean>
@@ -69,6 +98,6 @@
 
 	<!-- 注解的事务 -->
 	<tx:annotation-driven transaction-manager="txManager" />
-	
-	<import resource="./spring-shiro.xml"/>
+
+	<import resource="./spring-shiro.xml" />
 </beans>

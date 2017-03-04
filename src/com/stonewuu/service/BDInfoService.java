@@ -1,5 +1,7 @@
 package com.stonewuu.service;
 
+import java.util.List;
+
 import com.stonewuu.entity.BDInfo;
 
 public interface BDInfoService extends GeneralService<BDInfo>{
@@ -14,5 +16,15 @@ public interface BDInfoService extends GeneralService<BDInfo>{
 	 * @return
 	 */
 	public BDInfo find(Object bdInfoId);
+
+	/**
+	 * 
+	 * @Title: findAll
+	 * @Description: 查询所有贴吧用户
+	 * @author stonewuu 2017年2月23日 下午9:06:12
+	 *
+	 * @return
+	 */
+	public List<BDInfo> findAll();
 
 }
