@@ -111,3 +111,57 @@ body{
 .submit_btn:HOVER{
 	background: #27989A;
 }
+
+@media screen and (max-width: 600px) {
+	.regist_wp{
+		width: 380px;
+	}
+	.title .icon{
+		font-size: 30px;
+	}
+	.title{
+		font-size: 22px;
+	}
+	.submit_btn,.login{
+		font-size: 12px;
+	}
+	.input-element{
+		padding-top: 24px;
+	}
+	.input-element input{
+		font-size: 14px;
+	}
+	.input-element label{
+		top: 34px;
+	}
+	body{
+		font-size: 12px;
+	}
+}
+
+@media screen and (max-width: 400px) {
+	.regist_wp{
+		width: 350px;
+	}
+	.title .icon,.title{
+		font-size: 24px;
+	}
+}
+
+@media screen and (max-width: 380px) {
+	.regist_wp{
+		width: 320px;
+	}
+	.title .icon,.title{
+		font-size: 22px;
+	}
+}
+
+@media screen and (max-width: 350px) {
+	.regist_wp{
+		width: 300px;
+	}
+	.title .icon,.title{
+		font-size: 20px;
+	}
+}

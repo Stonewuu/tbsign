@@ -1,7 +1,6 @@
 package com.stonewuu.task;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -10,13 +9,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import com.stonewuu.entity.BDForum;
 import com.stonewuu.entity.BDInfo;
 import com.stonewuu.helper.TieBaSignHelper;
 import com.stonewuu.service.BDForumService;
 import com.stonewuu.service.BDInfoService;
-
-import net.sf.json.JSONObject;
 
 @Component
 public class SignAllTask implements Runnable{
@@ -37,11 +33,12 @@ public class SignAllTask implements Runnable{
 		List<BDInfo> infoList = bdInfoService.findAll();
 		if(infoList != null){
 			for(BDInfo info : infoList){
-				taskExecutor.execute(new SignUserTaskAtCron(info));
+				log.info("用户 \""+info.getUser().getName()+"\" 的百度账号 \""+info.getBdName()+"\" 准备进入签到线程！");
+				taskExecutor.execute(new SignUserTask(info, bdForumService, tbHelper));
 			}
 		}
 	}
-	
+	/*
 	class SignUserTaskAtCron implements Runnable{
 		private BDInfo info;
 		
@@ -62,16 +59,21 @@ public class SignAllTask implements Runnable{
 					//大于等于7级的吧超过50个
 					isMoreThenFifty = true;
 				}else{
-					StringBuffer str = new StringBuffer();
+					//用于调用百度一键签到接口的贴吧ID
+					StringBuffer bdforumids = new StringBuffer();
+					//用于调用百度一键签到接口的贴吧名称
+					StringBuffer bdforumNames = new StringBuffer();
 					for(BDForum forum : upForum){
-						str.append(forum.getForumId()+",");
+						bdforumids.append(forum.getForumId()+",");
+						bdforumNames.append(forum.getForumName()+",");
 					}
-					if(str.length()>0){
-						str.delete(str.length()-1, str.length());
-						Map<String, String> paramMap = tbHelper.getBetchSignMap(str.toString(), info.getBduss(), info.getUid());
+					if(bdforumids.length()>0){
+						log.info("用户 \""+info.getUser().getName()+"\" 的百度账号 \""+info.getBdName()+"\" 将对贴吧 \""+bdforumNames.toString()+"\" 进行一键签到！");
+						bdforumids.delete(bdforumids.length()-1, bdforumids.length());
+						Map<String, String> paramMap = tbHelper.getBetchSignMap(bdforumids.toString(), info.getBduss(), info.getUid());
 						String url = tbHelper.sign(paramMap);
 						JSONObject json = tbHelper.doBetchSignResult(url);
-						tbHelper.checkBetchSignResult(json,info.getId().toString());
+						tbHelper.checkBetchSignResult(json,info);
 					}
 				}
 			}
@@ -88,11 +90,11 @@ public class SignAllTask implements Runnable{
 					Map<String, String> paramMap = tbHelper.getSignMap(forum.getForumId(), forum.getForumKeyWord(), info.getBduss());
 					String url = tbHelper.sign(paramMap);
 					JSONObject json = tbHelper.doSignResult(url);
-					tbHelper.checkSignResult(json,info.getId().toString(), forum.getForumId());
+					tbHelper.checkSignResult(json, info, forum.getForumId());
 				}
 			}
 			log.info("用户 \""+info.getUser().getName()+"\" 的百度账号 \""+info.getBdName()+"\" 执行一键签到完毕！");
 		}
 	}
-
+*/
 }

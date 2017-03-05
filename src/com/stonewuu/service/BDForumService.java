@@ -59,7 +59,7 @@ public interface BDForumService extends GeneralService<BDForum>{
 	 * @Description: 通过贴吧用户id和吧id查找指定的吧
 	 * @author stonewuu 2017年2月23日 下午10:06:15
 	 *
-	 * @param bdinfo_id 百度用户信息表主键ID：bdinfo_id
+	 * @param bdinfo_id 百度用户信息表(BDInfo表)主键ID：bdinfo_id
 	 * @param fid 贴吧ID
 	 * @return 未找到返回null
 	 */

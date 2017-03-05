@@ -19,4 +19,11 @@ $(function(){
 			}
 		},"json");
 	});
+	
+	$(".input-element input").keydown(function(event){
+		if(event.keyCode==13){
+			$(this).blur();
+			$("#loginBtn").click();
+		}
+	});
 });

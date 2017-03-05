@@ -179,7 +179,7 @@ public class SignController extends BaseController {
 				//执行签到
 				JSONObject json = tbHelper.doSignResult(url);
 				//校验签到结果
-				boolean flag = tbHelper.checkSignResult(json,currentInfo.getId().toString(), bdForum.getForumId());
+				boolean flag = tbHelper.checkSignResult(json,currentInfo, bdForum.getForumId());
 				map.put("status", flag);
 				map.put("msg", flag?"签到成功！":"签到失败！");
 			}

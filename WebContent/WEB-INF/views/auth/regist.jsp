@@ -6,6 +6,7 @@
 <title>登录</title>
 <%@include file="/WEB-INF/views/static/commonStyle.jsp"%>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resource/css/regist.css" />
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <body>
 	<div class="bg"></div>

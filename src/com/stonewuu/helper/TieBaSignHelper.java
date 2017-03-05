@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.stonewuu.entity.BDForum;
+import com.stonewuu.entity.BDInfo;
 import com.stonewuu.service.BDForumService;
 
 import net.sf.json.JSONArray;
@@ -281,7 +282,7 @@ public class TieBaSignHelper {
 	 *
 	 * @param json
 	 */
-	public boolean checkBetchSignResult(JSONObject json, String bdinfo_id) {
+	public boolean checkBetchSignResult(JSONObject json, BDInfo bdinfo) {
 		String error_code = (String) json.get("error_code");
 		if ("0".equals(error_code)) {
 			JSONObject error = json.getJSONObject("error");
@@ -294,18 +295,18 @@ public class TieBaSignHelper {
 					String forum_id = (String) info.get("forum_id");
 					//本次签到增加的经验
 					Long cur_score = Long.valueOf((String) info.get("cur_score"));
-					BDForum forum = forumService.findByBdidAndFid(bdinfo_id, forum_id);
+					BDForum forum = forumService.findByBdidAndFid(bdinfo.getId().toString(), forum_id);
 					forum.setSigned(true);
 					//增加经验
 					forum.setExp(forum.getExp() + cur_score);
 					forumService.update(forum);
 				}
-				log.info("用户 \""+bdinfo_id+"\" 一键签到成功！");
+				log.info("用户 \""+bdinfo.getUser().getName()+"\" 的百度账号 \""+bdinfo.getBdName()+"\" 一键签到成功！");
 				return true;
 			}else{
 				//已签到
 				if("340011".equals(error.get("errno").toString())){
-					log.info("用户 \""+bdinfo_id+"\" 已经一键签到过！");
+					log.info("用户 \""+bdinfo.getUser().getName()+"\" 的百度账号 \""+bdinfo.getBdName()+"\" 已经一键签到过！");
 				}
 			}
 		} else {
@@ -324,13 +325,13 @@ public class TieBaSignHelper {
 	 * @param bdid 百度用户ID
 	 * @param fid 贴吧ID
 	 */
-	public boolean checkSignResult(JSONObject json, String bdinfo_id, String fid) {
+	public boolean checkSignResult(JSONObject json, BDInfo bdinfo, String fid) {
 		String error_code = (String) json.get("error_code");
 		if ("0".equals(error_code)) {
 			// 签到成功
 			JSONObject info = json.getJSONObject("user_info");
 			if(!info.isNullObject()){
-				BDForum forum = forumService.findByBdidAndFid(bdinfo_id, fid);
+				BDForum forum = forumService.findByBdidAndFid(bdinfo.getId().toString(), fid);
 				//本次签到增加的经验
 				Long plusExp = Long.valueOf(info.get("sign_bonus_point").toString());
 				//升级所需经验
@@ -342,7 +343,7 @@ public class TieBaSignHelper {
 					forum.setLevel(forum.getLevel() + 1);
 				}
 				forumService.update(forum);
-				log.info("用户 \""+bdinfo_id+"\" 签到贴吧 \""+forum.getForumName()+"\"成功");
+				log.info("用户 \""+bdinfo.getUser().getName()+"\" 的百度账号 \""+bdinfo.getBdName()+"\" 签到贴吧 \""+forum.getForumName()+"\"成功");
 				return true;
 			}else{
 				JSONObject error = json.getJSONObject("error");
@@ -352,10 +353,10 @@ public class TieBaSignHelper {
 			// 签到失败 TODO
 			if("160002".equals(error_code)){
 				//已经签到过了
-				BDForum forum = forumService.findByBdidAndFid(bdinfo_id, fid);
+				BDForum forum = forumService.findByBdidAndFid(bdinfo.getId().toString(), fid);
 				forum.setSigned(true);
 				forumService.update(forum);
-				log.info("用户 \""+bdinfo_id+"\" 已签到过贴吧 \""+forum.getForumName()+"\"");
+				log.info("用户 \""+bdinfo.getUser().getName()+"\" 的百度账号 \""+bdinfo.getBdName()+"\" 已签到过贴吧 \""+forum.getForumName()+"\"");
 				return true;
 			}
 		}
