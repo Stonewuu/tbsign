@@ -38,6 +38,7 @@
 			<value>
 				/resource/**=anon
 				/auth/**=anon
+				/favicon.ico=anon
 				/**=authc
 			</value>
 		</property>

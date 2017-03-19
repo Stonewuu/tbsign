@@ -13,7 +13,7 @@
 	<div class="lg_wp">
 		<div class="title">
 			<div class="icon"><i class="fa fa-user-circle-o fa-4x"></i></div>
-			<div class="titleName">登录云签到${currentUser.name}</div>
+			<div class="titleName">登录云签到</div>
 		</div>
 		<div class="lg_box">
 			<div class="form_box">
